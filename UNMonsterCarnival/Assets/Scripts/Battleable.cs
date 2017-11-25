@@ -10,13 +10,25 @@ public abstract class Battleable : MonoBehaviour {
 
     public double DelayAttack;
 
+    BehaviableState Behaviable;
+
     private void Awake()
     {
         HP = 1;
-        Power = 0;
+        Power = 0;  
         Speed = 0;
 
         DelayAttack = double.PositiveInfinity;
+
+        Behaviable = new BehaviableState(1);
+    }
+
+    public void Attack(GameObject target)
+    {   
+        if(Behaviable.bCanAttack == true)
+        {
+            Damage(target, Power);
+        }
     }
 
     public void Damage(GameObject target, int damagePower)
@@ -26,7 +38,7 @@ public abstract class Battleable : MonoBehaviour {
 
     public void Hit(int damagePower)
     {
-        if(HP > 0)
+        if(HP - damagePower > 0)
         {
             HP -= damagePower;
         }

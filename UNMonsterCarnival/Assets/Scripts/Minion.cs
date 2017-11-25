@@ -5,11 +5,12 @@ using UnityEngine;
 public class Minion : Battleable {
 
     Vector3 RandomDirection;
-    
+    BehaveState Behave;
+
     private void Awake()
     {
         HP = 20;
-        Power = 5;
+        Power = 3;
         Speed = 0.5d;
 
         DelayAttack = 1.0d;
@@ -17,11 +18,17 @@ public class Minion : Battleable {
         RandomDirection.x = 0;
         RandomDirection.y = 0;
         RandomDirection.z = 0;
+        Behave = new BehaveState(States.NEUTRAL);
     }
 
     private void Start()
     {
-        StartCoroutine("Move");
+        StartCoroutine("RandomizeVector");
+    }
+
+    private void Update()
+    {
+        Move();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -34,34 +41,38 @@ public class Minion : Battleable {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Object")
+        if(collision.tag == "Object" && Behave.Current == States.MOVE_ATTACK)
         {
             Attack(collision.gameObject);
         }
     }
 
-    private void RandomizeVector()
+    IEnumerator RandomizeVector()
     {
-        RandomDirection.x = Random.Range(-1, 1);
-        RandomDirection.y = Random.Range(-1, 1);
-        RandomDirection.z = Random.Range(-1, 1);
-
-        RandomDirection.Normalize();
-    }
-
-    IEnumerator Move()
-    {
-        WaitForSeconds WFS = new WaitForSeconds(5.0f);
+        WaitForSeconds WFS = new WaitForSeconds(2.0f);
         while (true)
         {
-            transform.Translate(RandomDirection);
+            if(Behave.Current == States.NEUTRAL)
+            {
+                RandomDirection.x = Random.Range(-1.0f, 1.0f);
+                RandomDirection.y = Random.Range(-1.0f, 1.0f);
+            }
+            else if(Behave.Current == States.IDLE)
+            {
+                RandomDirection.x = 0;
+                RandomDirection.y = 0;
+            }
             yield return WFS;
         }
     }
 
-    public void Attack(GameObject target)
+    public void Move()
     {
-        Damage(target, Power);
+        Vector3 moveDirection = new Vector3(0,0,0);
+
+        moveDirection.x = RandomDirection.x * (float)Speed * Time.deltaTime;
+        moveDirection.y = RandomDirection.y * (float)Speed * Time.deltaTime;
+        transform.Translate(moveDirection);
     }
     
 }

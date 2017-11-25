@@ -13,10 +13,12 @@ public class Player : Battleable {
     public double DelaySkillMultiple;
     public double DelaySkillSpeed;
 
-    Vector3 MoveDirection;
-    CircleCollider2D AttackRadius;
+    bool bCanSingleSkill;
+    bool bCanMultipleSkill;
+    bool bCanSpeedSkill;
+
     List<GameObject> AttackableEnemies;
-    GameObject MainTargetEnemy;
+    GameObject MainTarget;
     
 
 	// Use this for initialization
@@ -35,14 +37,12 @@ public class Player : Battleable {
         DelaySkillMultiple = 4.0d;
         DelaySkillSpeed = 6.0d;
 
-        MoveDirection.x = 0;
-        MoveDirection.y = 0;
-        MoveDirection.z = 0;
+        bCanSingleSkill = false;
+        bCanMultipleSkill = false;
+        bCanSpeedSkill = false;
 
-        AttackRadius = this.GetComponent<CircleCollider2D>();
-        AttackRadius.radius = 0.5f;
-        AttackableEnemies = null;
-        MainTargetEnemy = null;
+        AttackableEnemies = new List<GameObject>();
+        //MainTarget;
 	}
 	
 	// Update is called once per frame
@@ -52,24 +52,24 @@ public class Player : Battleable {
 
         Move(h, v);
 
+        SetMainTarget();
 	}
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" || collision.tag == "Enemy")
+        if (collision.tag == "Player" || collision.tag == "Enemy")
+        {
             AttackableEnemies.Add(collision.gameObject);
+        }
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.tag == "Player" || collision.tag == "Enemy")
+        {
             AttackableEnemies.Remove(collision.gameObject);
-    }
-
-    void GeneralAttack(GameObject target)
-    {
-        Damage(target, Power);
+        }
     }
 
 
@@ -88,6 +88,7 @@ public class Player : Battleable {
 
     public void Move(float h, float v)
     {
+        Vector3 MoveDirection = new Vector3();
         MoveDirection.x = h * (float)Speed * Time.deltaTime;
         MoveDirection.y = v * (float)Speed * Time.deltaTime;
         transform.Translate(MoveDirection);
@@ -98,18 +99,18 @@ public class Player : Battleable {
         HP += HealAmount;
     }
 
-    //public void SetMainTarget()
-    //{
-    //    ColliderDistance2D collDistance;
-    //    double MinDistance = Double.PositiveInfinity;
-    //    for (int i = 0; i < AttackableEnemies.Count; i++)
-    //    {
-    //        collDistance = gameObject.GetComponent<BoxCollider2D>().Distance(AttackableEnemies[i].GetComponent<Collider2D>());
-    //        if(MinDistance > collDistance.distance)
-    //        {
-    //            MainTargetEnemy = AttackableEnemies[i];
-    //            MinDistance = collDistance.distance;
-    //        }
-    //    }
-    //}    
+    public void SetMainTarget()
+    {
+        ColliderDistance2D collDistance;
+        double minDistance = Double.PositiveInfinity;
+        for (int i = 0; i < AttackableEnemies.Count; i++)
+        {
+            collDistance = gameObject.GetComponent<BoxCollider2D>().Distance(AttackableEnemies[i].GetComponent<Collider2D>());
+            if (minDistance > collDistance.distance)
+            {
+                MainTarget = AttackableEnemies[i];
+                minDistance = collDistance.distance;
+            }
+        }
+    }
 }
