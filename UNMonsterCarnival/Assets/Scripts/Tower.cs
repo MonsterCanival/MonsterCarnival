@@ -12,8 +12,10 @@ public class Tower : Battleable{
 
     GameObject MainTarget;
 
-    void Awake()
+
+    protected void Awake()
     {
+        base.Awake();
         HP = 300;
         Power = 20;
 
@@ -100,6 +102,39 @@ public class Tower : Battleable{
             PlayerTarget.Remove(collision.gameObject);
         }
 
+    }
+
+    public override void Attack(GameObject target)
+    {
+        print(gameObject + "calls this!");
+        if (Behaviable.bCanAttack == true)
+        {
+            Behaviable.bCanAttack = false;
+            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Damage(target, Power);
+
+            ConditionAnimator.SetInteger("Condition", 2);
+        }
+    }
+
+    public override void Damage(GameObject target, int damagePower)
+    {
+        print(target);
+        print(damagePower);
+        target.GetComponent<Battleable>().Hit(damagePower);
+    }
+
+    public override void Hit(int damagePower)
+    {
+        print("HIT - " + gameObject + " at " + damagePower);
+        if (HP - damagePower > 0)
+        {
+            HP -= damagePower;
+        }
+        else
+        {
+            Die();
+        }
     }
 
     public void SetMainTarget()

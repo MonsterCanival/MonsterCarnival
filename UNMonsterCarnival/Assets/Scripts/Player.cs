@@ -19,10 +19,11 @@ public class Player : Battleable {
 
     List<GameObject> AttackableEnemies;
     GameObject MainTarget;
-    
 
-	// Use this for initialization
-	void Awake () {
+
+    // Use this for initialization
+    protected void Awake () {
+        base.Awake();
         HP = 100;
 
         Power = 10;
@@ -58,7 +59,7 @@ public class Player : Battleable {
         {
             Attack(MainTarget);
         }
-	}
+	}   
 
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -77,6 +78,38 @@ public class Player : Battleable {
         }
     }
 
+    public override void Attack(GameObject target)
+    {
+        print(gameObject + "calls this!");
+        if (Behaviable.bCanAttack == true)
+        {
+            Behaviable.bCanAttack = false;
+            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Damage(target, Power);
+
+            ConditionAnimator.SetInteger("Condition", 2);
+        }
+    }
+
+    public override void Damage(GameObject target, int damagePower)
+    {
+        print(target);
+        print(damagePower);
+        target.GetComponent<Battleable>().Hit(damagePower);
+    }
+
+    public override void Hit(int damagePower)
+    {
+        print("HIT - " + gameObject + " at " + damagePower);
+        if (HP - damagePower > 0)
+        {
+            HP -= damagePower;
+        }
+        else
+        {
+            Die();
+        }
+    }
 
     void SkillSingleAttack(GameObject target)
     {
@@ -97,6 +130,14 @@ public class Player : Battleable {
         MoveDirection.x = h * (float)Speed * Time.deltaTime;
         MoveDirection.y = v * (float)Speed * Time.deltaTime;
         transform.Translate(MoveDirection);
+        if(MoveDirection.magnitude <= 0.001)
+        {
+            ConditionAnimator.SetInteger("Condition", 0);
+        }
+        else
+        {
+            ConditionAnimator.SetInteger("Condition", 1);
+        }
     }
 
     public void Heal(int HealAmount)

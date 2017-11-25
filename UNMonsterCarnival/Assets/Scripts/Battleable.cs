@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Battleable : MonoBehaviour {
+public abstract class Battleable : MonoBehaviour {
 
     public int HP;
     public int Power;
@@ -14,7 +14,7 @@ public class Battleable : MonoBehaviour {
 
     public BehaviableState Behaviable;
 
-    private void Awake()
+    protected void Awake()
     {
         HP = 1;
         Power = 0;  
@@ -28,38 +28,13 @@ public class Battleable : MonoBehaviour {
         Behaviable = new BehaviableState(1);
     }
 
-    public void Attack(GameObject target)
-    {   
-        if(Behaviable.bCanAttack == true)
-        {
-            Behaviable.bCanAttack = false;
-            Invoke("Behaviable.SetBCanAttackTrue", (float) DelayAttack);
-            Damage(target, Power);
+    public abstract void Attack(GameObject target);
 
-            ConditionAnimator.SetInteger("Condition", 2);
-            
-        }
-    }
+    public abstract void Damage(GameObject target, int damagePower);
 
-    public void Damage(GameObject target, int damagePower)
-    {
-        target.GetComponent<Battleable>().Hit(damagePower);
-    }
+    public abstract void Hit(int damagePower);
 
-    public void Hit(int damagePower)
-    {
-        print("HIT - " + gameObject + " at " + damagePower);
-        if(HP - damagePower > 0)
-        {
-            HP -= damagePower;
-        }
-        else
-        {
-            Die();
-        }
-    }
-
-    public void Die()
+    public virtual void Die()
     {
         Behaviable.bCanControl = false;
     }

@@ -7,8 +7,9 @@ public class JungleMonster : Battleable {
     public BehaveState Behave;
     GameObject MainTarget;
 
-    private void Awake()
+    protected void Awake()
     {
+        base.Awake();
         HP = 50;
         Power = 10;
         Speed = 0.2d;
@@ -46,6 +47,39 @@ public class JungleMonster : Battleable {
                     Behave.Current = States.ATTACK;
                 }
             }
+        }
+    }
+
+    public override void Attack(GameObject target)
+    {
+        print(gameObject + "calls this!");
+        if (Behaviable.bCanAttack == true)
+        {
+            Behaviable.bCanAttack = false;
+            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Damage(target, Power);
+
+            ConditionAnimator.SetInteger("Condition", 2);
+        }
+    }
+
+    public override void Damage(GameObject target, int damagePower)
+    {
+        print(target);
+        print(damagePower);
+        target.GetComponent<Battleable>().Hit(damagePower);
+    }
+
+    public override void Hit(int damagePower)
+    {
+        print("HIT - " + gameObject + " at " + damagePower);
+        if (HP - damagePower > 0)
+        {
+            HP -= damagePower;
+        }
+        else
+        {
+            Die();
         }
     }
 

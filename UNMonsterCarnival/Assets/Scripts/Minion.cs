@@ -7,8 +7,9 @@ public class Minion : Battleable {
     Vector3 RandomDirection;
     public BehaveState Behave;
 
-    private void Awake()
+    protected void Awake()
     {
+        base.Awake();
         HP = 20;
         Power = 3;
         Speed = 0.5d;
@@ -67,6 +68,39 @@ public class Minion : Battleable {
                 RandomDirection.y = 0;
             }
             yield return WFS;
+        }
+    }
+
+    public override void Attack(GameObject target)
+    {
+        print(gameObject + "calls this!");
+        if (Behaviable.bCanAttack == true)
+        {
+            Behaviable.bCanAttack = false;
+            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Damage(target, Power);
+
+            ConditionAnimator.SetInteger("Condition", 2);
+        }
+    }
+
+    public override void Damage(GameObject target, int damagePower)
+    {
+        print(target);
+        print(damagePower);
+        target.GetComponent<Battleable>().Hit(damagePower);
+    }
+
+    public override void Hit(int damagePower)
+    {
+        print("HIT - " + gameObject + " at " + damagePower);
+        if (HP - damagePower > 0)
+        {
+            HP -= damagePower;
+        }
+        else
+        {
+            Die();
         }
     }
 
