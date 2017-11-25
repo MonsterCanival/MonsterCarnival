@@ -47,6 +47,7 @@ public class Player : Battleable {
 	
 	// Update is called once per frame
 	void Update () {
+        print(HP);
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
