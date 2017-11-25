@@ -5,6 +5,10 @@ using UnityEngine;
 public class Battleable : MonoBehaviour {
 
     public int HP;
+    public int Power;
+    public double Speed;
+
+    public double DelayAttack;
 
     private void Awake()
     {

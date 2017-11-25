@@ -5,14 +5,10 @@ using UnityEngine;
 
 public class Player : Battleable {
 
-    public int Power;
     int SkillSinglePower;
     int SkillMultiplePower;
-
-    public double Speed;
     double SkillSpeed;
 
-    public double DelayAttack;
     public double DelaySkillSingle;
     public double DelaySkillMultiple;
     public double DelaySkillSpeed;
@@ -55,18 +51,19 @@ public class Player : Battleable {
         float v = Input.GetAxisRaw("Vertical");
 
         Move(h, v);
+
 	}
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Enemy")
+        if(collision.tag == "Player" || collision.tag == "Enemy")
             AttackableEnemies.Add(collision.gameObject);
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "Enemy")
+        if (collision.tag == "Player" || collision.tag == "Enemy")
             AttackableEnemies.Remove(collision.gameObject);
     }
 
@@ -89,29 +86,30 @@ public class Player : Battleable {
         }
     }
 
-    void Move(float h, float v)
+    public void Move(float h, float v)
     {
         MoveDirection.x = h * (float)Speed * Time.deltaTime;
         MoveDirection.y = v * (float)Speed * Time.deltaTime;
         transform.Translate(MoveDirection);
     }
 
-    void Heal(int HealAmount)
+    public void Heal(int HealAmount)
     {
         HP += HealAmount;
     }
 
-    void SetMainTarget()
-    {
-        ColliderDistance2D collDistance;
-        double MinDistance = Double.PositiveInfinity;
-        for (int i = 0; i < AttackableEnemies.Count; i++)
-        {
-            collDistance = gameObject.GetComponent<BoxCollider2D>().Distance(AttackableEnemies[i].GetComponent<Collider2D>());
-            if(MinDistance > collDistance.distance)
-            {
-                
-            }
-        }
-    }    
+    //public void SetMainTarget()
+    //{
+    //    ColliderDistance2D collDistance;
+    //    double MinDistance = Double.PositiveInfinity;
+    //    for (int i = 0; i < AttackableEnemies.Count; i++)
+    //    {
+    //        collDistance = gameObject.GetComponent<BoxCollider2D>().Distance(AttackableEnemies[i].GetComponent<Collider2D>());
+    //        if(MinDistance > collDistance.distance)
+    //        {
+    //            MainTargetEnemy = AttackableEnemies[i];
+    //            MinDistance = collDistance.distance;
+    //        }
+    //    }
+    //}    
 }
