@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Battleable : MonoBehaviour {
+public abstract class Battleable : MonoBehaviour {
 
     public int HP;
     public int Power;
@@ -13,7 +13,12 @@ public class Battleable : MonoBehaviour {
     private void Awake()
     {
         HP = 1;
+        Power = 0;
+        Speed = 0;
+
+        DelayAttack = double.PositiveInfinity;
     }
+
     public void Damage(GameObject target, int damagePower)
     {
         target.GetComponent<Battleable>().Hit(damagePower);
