@@ -41,19 +41,23 @@ public class Player : Battleable {
         bCanMultipleSkill = false;
         bCanSpeedSkill = false;
 
+        ConditionAnimator = GetComponent<Animator>();
         AttackableEnemies = new List<GameObject>();
-        //MainTarget;
+        MainTarget = null;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        print(HP);
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-
         Move(h, v);
 
         SetMainTarget();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Attack(MainTarget);
+        }
 	}
 
 

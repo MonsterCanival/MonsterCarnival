@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JungleMonster : Battleable {
 
-    BehaveState Behave;
+    public BehaveState Behave;
     GameObject MainTarget;
 
     private void Awake()
@@ -15,25 +15,36 @@ public class JungleMonster : Battleable {
 
         DelayAttack = 2.5d;
         Behave = new BehaveState(States.MOVE_ATTACK);
+        MainTarget = null;
+        
     }
 
     private void Update()
     {
-        if(Behave.Current == States.MOVE_ATTACK)
+        if(Behave.Current == States.MOVE_ATTACK && MainTarget != null)
         {
             Move();
         }
 
+        if(MainTarget == null)
+        {
+            SetMainTarget();
+        }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.tag == "Object")
+        
+        if (collision.GetType() == typeof(BoxCollider2D))
         {
-            Minion checkNullTower;
-            if ((checkNullTower = collision.GetComponent<Minion>()) != null)
-            {
-                Attack(collision.gameObject);
+            if (collision.tag =="Object")
+            { 
+                Tower checkNullTower = collision.GetComponent<Tower>();
+                if ((checkNullTower != null))
+                {
+                    Attack(collision.gameObject);
+                    Behave.Current = States.ATTACK;
+                }
             }
         }
     }
@@ -49,13 +60,15 @@ public class JungleMonster : Battleable {
 
     public void SetMainTarget()
     {
-        Minion[] targetList;
-        targetList = GetComponents<Minion>();
+
+        Tower[] targetList;
+        targetList = FindObjectsOfType<Tower>();
 
         double minDistance = double.PositiveInfinity;
         double currentTargetDistance;
         for(int i=0; i < targetList.Length; ++i)
         {
+            
             currentTargetDistance = Vector3.Distance(transform.position, targetList[i].transform.position);
             if(currentTargetDistance < minDistance)
             {
