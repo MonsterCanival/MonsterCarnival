@@ -29,7 +29,9 @@ public class JungleCamp : MonoBehaviour {
         if (timeSpan > checkTime)
         {
             timeSpan = 0;
-            Instantiate(GameObject.Find("JungleMonster"), new Vector2(gameObject.transform.position.x, gameObject.transform.position.y), Quaternion.identity);
+            Instantiate(GameObject.Find("JungleMonster"),
+                new Vector2(gameObject.transform.position.x, gameObject.transform.position.y),
+                Quaternion.identity);
             empty = false;
         }
 	}
