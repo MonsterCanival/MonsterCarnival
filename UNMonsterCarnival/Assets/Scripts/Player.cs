@@ -60,25 +60,28 @@ public class Player : Battleable {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        AttackableEnemies.Add(collision.gameObject);
+        if(collision.tag == "Enemy")
+            AttackableEnemies.Add(collision.gameObject);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
-        AttackableEnemies.Remove(collision.gameObject);
+        if (collision.tag == "Enemy")
+            AttackableEnemies.Remove(collision.gameObject);
     }
 
-    public void GeneralAttack(GameObject target)
+    void GeneralAttack(GameObject target)
     {
         Damage(target, Power);
     }
 
-    public void SkillSingleAttack(GameObject target)
+
+    void SkillSingleAttack(GameObject target)
     {
         Damage(target, SkillSinglePower);
     }
 
-    public void SkillMultipleAttack(GameObject[] targets)
+    void SkillMultipleAttack(GameObject[] targets)
     {
         for(int i = 0; i < targets.Length; i++)
         {
@@ -86,14 +89,29 @@ public class Player : Battleable {
         }
     }
 
-    public void Move(float h, float v)
+    void Move(float h, float v)
     {
         MoveDirection.x = h * (float)Speed * Time.deltaTime;
         MoveDirection.y = v * (float)Speed * Time.deltaTime;
         transform.Translate(MoveDirection);
     }
-    public void Heal(int HealAmount)
+
+    void Heal(int HealAmount)
     {
         HP += HealAmount;
     }
+
+    void SetMainTarget()
+    {
+        ColliderDistance2D collDistance;
+        double MinDistance = Double.PositiveInfinity;
+        for (int i = 0; i < AttackableEnemies.Count; i++)
+        {
+            collDistance = gameObject.GetComponent<BoxCollider2D>().Distance(AttackableEnemies[i].GetComponent<Collider2D>());
+            if(MinDistance > collDistance.distance)
+            {
+                
+            }
+        }
+    }    
 }
