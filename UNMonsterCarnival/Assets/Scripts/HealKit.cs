@@ -16,6 +16,7 @@ public class HealKit : MonoBehaviour {
 	
     void OnTriggerEnter2D(Collider2D other)
     {
+        print("1");
         if(other.gameObject.tag=="Player")
         {
             GameObject.Find("Player").GetComponent<Player>().Heal(healHP);
@@ -25,6 +26,8 @@ public class HealKit : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
+        print(timeSpan);
+        print(GameObject.Find("Player").GetComponent<Player>().HP);
         if (gameObject.GetComponent<HealKit>().enabled == false)
             timeSpan += Time.deltaTime;
         if (timeSpan > checkTime)
@@ -32,6 +35,7 @@ public class HealKit : MonoBehaviour {
             timeSpan = 0;
             gameObject.GetComponent<HealKit>().enabled = true;
             gameObject.SetActive(true);
+            print("보여야됨");
         }
 	}
 }

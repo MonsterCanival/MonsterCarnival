@@ -14,16 +14,23 @@ public class JungleCamp : MonoBehaviour {
         empty = false;
 	}
 
-    //void OnTriggerExit2D(Collider2D other)
-    //{
-    //    if(other.gameObject.tag=="JungleMonster")
-    //    {
-    //        empty
-    //    }
-    //}
-	
-	// Update is called once per frame
-	void Update () {
-		
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "JungleMonster")
+        {
+            empty = true;
+        }
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (empty == true)
+            timeSpan += Time.deltaTime;
+        if (timeSpan > checkTime)
+        {
+            timeSpan = 0;
+            //CreateMonster();
+            empty = false;
+        }
 	}
 }
