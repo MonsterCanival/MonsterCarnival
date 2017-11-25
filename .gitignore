@@ -1,8 +1,8 @@
-MonsterCarnival/[Ll]ibrary/
-MonsterCarnival/[Tt]emp/
-MonsterCarnival/[Oo]bj/
-MonsterCarnival/[Bb]uild/
-MonsterCarnival/[Bb]uilds/
+MonsterCarnival/Library/
+MonsterCarnival/Temp/
+MonsterCarnival/Obj/
+MonsterCarnival/Build/
+MonsterCarnival/Builds/
 MonsterCarnival/Assets/AssetStoreTools*
 
 # Visual Studio 2015 cache directory
