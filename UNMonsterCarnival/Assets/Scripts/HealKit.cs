@@ -5,37 +5,37 @@ using UnityEngine;
 public class HealKit : MonoBehaviour {
 
     int healHP = 30;
+    bool take_HealKit;
     float timeSpan;
     float checkTime;
 
 	// Use this for initialization
 	void Start () {
+        take_HealKit = false;
         timeSpan = 0;
         checkTime = 10;
 	}
 	
     void OnTriggerEnter2D(Collider2D other)
     {
-        print("1");
-        if(other.gameObject.tag=="Player")
+        if(other.gameObject.tag=="Player"&&take_HealKit==false)
         {
             GameObject.Find("Player").GetComponent<Player>().Heal(healHP);
-            gameObject.GetComponent<HealKit>().enabled = false;
-            gameObject.SetActive(false);
+            take_HealKit = true;
+            //안보이게하기
         }
     }
 	// Update is called once per frame
 	void Update () {
-        print(timeSpan);
-        print(GameObject.Find("Player").GetComponent<Player>().HP);
-        if (gameObject.GetComponent<HealKit>().enabled == false)
+        if (take_HealKit == true)
+        {
             timeSpan += Time.deltaTime;
+        }
         if (timeSpan > checkTime)
         {
             timeSpan = 0;
-            gameObject.GetComponent<HealKit>().enabled = true;
-            gameObject.SetActive(true);
-            print("보여야됨");
+            take_HealKit = false;
+            //다시 보이게
         }
 	}
 }
