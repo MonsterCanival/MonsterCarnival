@@ -12,4 +12,24 @@ public struct BehaviableState {
         bCanAttack = true;
         bCanControl = true;
     }
+
+    public void SetBCanAttackTrue()
+    {
+        bCanAttack = true;
+    }
+    public void SetBCanAttackFalse()
+    {
+        bCanAttack = false;
+    }
+
+    public void SetBCanControlTrue()
+    {
+        bCanControl = true;
+    }
+    public void SetBCanControlFalse()
+    {
+        bCanControl = false;
+    }
+
+
 }

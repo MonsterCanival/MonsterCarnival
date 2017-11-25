@@ -5,7 +5,7 @@ using UnityEngine;
 public class Minion : Battleable {
 
     Vector3 RandomDirection;
-    BehaveState Behave;
+    public BehaveState Behave;
 
     private void Awake()
     {
@@ -28,7 +28,10 @@ public class Minion : Battleable {
 
     private void Update()
     {
-        Move();
+        if(Behave.Current == States.NEUTRAL)
+        {
+            Move();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -39,10 +42,11 @@ public class Minion : Battleable {
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.tag == "Object" && Behave.Current == States.MOVE_ATTACK)
         {
+            Behave.Current = States.ATTACK;
             Attack(collision.gameObject);
         }
     }
