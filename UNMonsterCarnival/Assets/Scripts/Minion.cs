@@ -7,7 +7,7 @@ public class Minion : Battleable {
     Vector3 RandomDirection;
     public BehaveState Behave;
 
-    protected void Awake()
+    private void Awake()
     {
         base.Awake();
         HP = 20;
@@ -20,6 +20,7 @@ public class Minion : Battleable {
         RandomDirection.y = 0;
         RandomDirection.z = 0;
         Behave = new BehaveState(States.NEUTRAL);
+
     }
 
     private void Start()
@@ -71,13 +72,18 @@ public class Minion : Battleable {
         }
     }
 
+    private void OnEnable()
+    {
+        transform.position = new Vector3(Random.Range(-8.5f, 8.5f), Random.Range(-5.0f, 5.0f), 0);
+        Awake();
+    }
+
     public override void Attack(GameObject target)
     {
-        print(gameObject + "calls this!");
         if (Behaviable.bCanAttack == true)
         {
             Behaviable.bCanAttack = false;
-            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Invoke("InvokeSetBCanAttackTrue", (float)DelayAttack);
             Damage(target, Power);
 
             ConditionAnimator.SetInteger("Condition", 2);
@@ -93,7 +99,6 @@ public class Minion : Battleable {
 
     public override void Hit(int damagePower)
     {
-        print("HIT - " + gameObject + " at " + damagePower);
         if (HP - damagePower > 0)
         {
             HP -= damagePower;
@@ -101,6 +106,15 @@ public class Minion : Battleable {
         else
         {
             Die();
+        }
+    }
+    public override void Die()
+    {
+        GameObject poolObject = GameObject.FindWithTag("Respawn");
+        if (poolObject != null)
+        {
+            gameObject.transform.SetParent(poolObject.transform);
+            poolObject.GetComponent<MinionPool>().PushPool(gameObject);
         }
     }
 

@@ -36,6 +36,36 @@ public abstract class Battleable : MonoBehaviour {
 
     public virtual void Die()
     {
-        Behaviable.bCanControl = false;
+        print(gameObject + "is Die");
+        gameObject.SetActive(false);
+            
+    }
+
+
+
+    public virtual void InvokeSetBCanControlTrue()
+    {
+        Behaviable.SetBCanControlTrue();
+        ConditionAnimator.SetInteger("Condition", 0);
+    }
+    public virtual void InvokeSetBCanAttackTrue()
+    {
+        Behaviable.SetBCanAttackTrue();
+        ConditionAnimator.SetInteger("Condition", 0);
+    }
+    public virtual void InvokeSetBCanSingleSkillTrue()
+    {
+        Behaviable.SetbCanSingleSkillTrue();
+        ConditionAnimator.SetInteger("Condition", 0);
+    }
+    public virtual void InvokeSetBCanMultipleSkillTrue()
+    {
+        Behaviable.SetbCanMultipleSkillTrue();
+        ConditionAnimator.SetInteger("Condition", 0);
+    }
+    public virtual void InvokeSetBCanSpeedSkillTrue()
+    {
+        Behaviable.SetbCanSpeedSkillTrue();
+        ConditionAnimator.SetInteger("Condition", 0);
     }
 }

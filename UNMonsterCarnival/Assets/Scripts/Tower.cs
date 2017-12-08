@@ -17,9 +17,9 @@ public class Tower : Battleable{
     {
         base.Awake();
         HP = 300;
-        Power = 20;
+        Power = 15;
 
-        DelayAttack = 2.0d;
+        DelayAttack = 1.0d;
 
         JungleTarget = new List<GameObject>();
         AttackMinionTarget = new List<GameObject>();
@@ -103,14 +103,13 @@ public class Tower : Battleable{
         }
 
     }
-
+    
     public override void Attack(GameObject target)
     {
-        print(gameObject + "calls this!");
         if (Behaviable.bCanAttack == true)
         {
             Behaviable.bCanAttack = false;
-            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Invoke("InvokeSetBCanAttackTrue", (float)DelayAttack);
             Damage(target, Power);
 
             ConditionAnimator.SetInteger("Condition", 2);
@@ -119,14 +118,12 @@ public class Tower : Battleable{
 
     public override void Damage(GameObject target, int damagePower)
     {
-        print(target);
-        print(damagePower);
         target.GetComponent<Battleable>().Hit(damagePower);
     }
 
     public override void Hit(int damagePower)
     {
-        print("HIT - " + gameObject + " at " + damagePower);
+        print(HP + "HP TOWER");
         if (HP - damagePower > 0)
         {
             HP -= damagePower;
@@ -134,6 +131,16 @@ public class Tower : Battleable{
         else
         {
             Die();
+        }
+    }
+
+    public override void Die()
+    {
+        if(Behaviable.bIsOwned == false)
+            Behaviable.bIsOwned = true;
+        else
+        {
+            Behaviable.bIsOwned = false;
         }
     }
 

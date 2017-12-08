@@ -10,15 +10,27 @@ public class JungleCamp : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         timeSpan = 0;
-        checkTime = 10;
+        checkTime = 15;
         empty = false;
 	}
 
-    void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "JungleMonster")
+        if(other.gameObject.tag == "Player")
         {
             empty = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        JungleMonster checkJungle;
+        if ((checkJungle = other.gameObject.GetComponent<JungleMonster>()) != null)
+        {
+            if(checkJungle.GetType() == typeof(JungleMonster))
+            {
+                empty = true;
+            }
         }
     }
 
@@ -31,6 +43,9 @@ public class JungleCamp : MonoBehaviour {
             timeSpan = 0;
             Instantiate(GameObject.Find("JungleMonster"),
                 new Vector2(gameObject.transform.position.x, gameObject.transform.position.y),
+                Quaternion.identity);
+            Instantiate(GameObject.Find("JungleMonster"),
+                new Vector2(gameObject.transform.position.x+Random.Range(-0.2f,0.2f), gameObject.transform.position.y+Random.Range(-0.25f,0.25f)),
                 Quaternion.identity);
             empty = false;
         }

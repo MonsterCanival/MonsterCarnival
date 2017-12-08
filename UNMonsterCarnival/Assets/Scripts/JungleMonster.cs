@@ -7,29 +7,33 @@ public class JungleMonster : Battleable {
     public BehaveState Behave;
     GameObject MainTarget;
 
-    protected void Awake()
+    protected new void Awake()
     {
         base.Awake();
-        HP = 50;
+        HP = 100;
         Power = 10;
-        Speed = 0.2d;
+        Speed = 0.5d;
 
         DelayAttack = 2.5d;
-        Behave = new BehaveState(States.MOVE_ATTACK);
+        Behave = new BehaveState(States.NEUTRAL);
         MainTarget = null;
         
     }
 
     private void Update()
     {
-        if(Behave.Current == States.MOVE_ATTACK && MainTarget != null)
+        if(Behaviable.bIsOwned == true)
         {
-            Move();
-        }
 
-        if(MainTarget == null)
-        {
-            SetMainTarget();
+            if (Behave.Current == States.MOVE_ATTACK && MainTarget != null)
+            {
+                Move();
+            }
+
+            if (MainTarget == null)
+            {
+                SetMainTarget();
+            }
         }
     }
 
@@ -38,10 +42,20 @@ public class JungleMonster : Battleable {
         
         if (collision.GetType() == typeof(BoxCollider2D))
         {
+
             if (collision.tag =="Object")
-            { 
+            {
                 Tower checkNullTower = collision.GetComponent<Tower>();
-                if ((checkNullTower != null))
+                if ((checkNullTower != null) && (checkNullTower.Behaviable.bIsOwned == false))
+                {
+                    Attack(collision.gameObject);
+                    Behave.Current = States.ATTACK;
+                }
+                
+            }
+            else if(collision.tag == "Player")
+            {
+                if(Behaviable.bIsOwned == false)
                 {
                     Attack(collision.gameObject);
                     Behave.Current = States.ATTACK;
@@ -50,13 +64,37 @@ public class JungleMonster : Battleable {
         }
     }
 
+    private void OnEnable()
+    {
+        HP = 50;
+        Behave.Current = States.MOVE_ATTACK;
+    }
+
+    private void OnDisable()
+    {
+        if(Behaviable.bIsOwned == true)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Behaviable.bIsOwned = true;
+            gameObject.SetActive(false);
+            Invoke("SetActiveTrue", 3.0f);        
+        }
+    }
+
+    private void SetActiveTrue()
+    {
+        gameObject.SetActive(true);
+    }
+
     public override void Attack(GameObject target)
     {
-        print(gameObject + "calls this!");
         if (Behaviable.bCanAttack == true)
         {
             Behaviable.bCanAttack = false;
-            Invoke("Behaviable.SetBCanAttackTrue", (float)DelayAttack);
+            Invoke("InvokeSetBCanAttackTrue", (float)DelayAttack);
             Damage(target, Power);
 
             ConditionAnimator.SetInteger("Condition", 2);
@@ -65,14 +103,11 @@ public class JungleMonster : Battleable {
 
     public override void Damage(GameObject target, int damagePower)
     {
-        print(target);
-        print(damagePower);
         target.GetComponent<Battleable>().Hit(damagePower);
     }
 
     public override void Hit(int damagePower)
     {
-        print("HIT - " + gameObject + " at " + damagePower);
         if (HP - damagePower > 0)
         {
             HP -= damagePower;
